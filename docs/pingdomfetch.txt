@@ -202,5 +202,5 @@ PINGDOMFETCH OPTIONS
         Prints out the current version of pingdomfetch.
 
 AUTHOR
-    Paul Buetow - <paul@buetow.org>
+    Paul Buetow - <http://pingdomfetch.buetow.org>
 

@@ -213,5 +213,5 @@ Prints out the current version of pingdomfetch.
 
 =head1 AUTHOR
 
-Paul Buetow - <paul@buetow.org>
+Paul Buetow - <http://pingdomfetch.buetow.org>
 
