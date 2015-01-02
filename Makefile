@@ -28,9 +28,7 @@ dch:
 	dch -i
 deb: 
 	dpkg-buildpackage -uc -us
-dput: deb
-	bash -c "dput -u incoming-debrepo ../$(NAME)_$$(cat ./debian/pingdomfetch/usr/share/pingdomfetch/version)_amd64.changes"
-release: all dch deb dput 
+release: all dch deb
 	git commit -a -m 'New release'
 	bash -c "git tag $$(cat ./debian/pingdomfetch/usr/share/pingdomfetch/version)"
 	git push origin master
