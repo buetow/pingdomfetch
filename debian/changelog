@@ -1,4 +1,10 @@
-pingdomfetch (1.0.0) wheezy; urgency=low
+pingdomfetch (1.0.1) stable; urgency=low
+
+  * Add curl path to sample config which was missing
+
+ -- Paul Buetow <paul@buetow.org>  Fri, 02 Jan 2015 15:14:05 +0100
+
+pingdomfetch (1.0.0) stable; urgency=low
 
   * Initial release
 
