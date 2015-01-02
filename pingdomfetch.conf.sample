@@ -26,6 +26,9 @@ notify.email.to = pingdomfetch@mx.buetow.org
 ; (comma separated)
 notify.info.email.to = pingdomfetch@mx.buetow.org
 
+; Needed by a few HTTP/s requests
+curl.path = /usr/bin/curl
+
 ; Pingdom stuff, used to pull results from Pingdom via JSON API
 [pingdom]
 ; Pingdom API generic configurations
