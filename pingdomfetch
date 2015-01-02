@@ -1,0 +1,91 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+$| = 1;
+my $lib;
+
+BEGIN {
+    if ( -d './lib/PINGDOMFETCH' ) {
+        $lib = './lib';
+
+    }
+    else {
+        $lib = '/usr/share/pingdomfetch/lib';
+    }
+}
+
+use lib $lib;
+
+use PINGDOMFETCH::Pingdomfetch;
+use PINGDOMFETCH::Utils;
+use PINGDOMFETCH::Config;
+
+sub synopsis ($) {
+    my ($opts) = @_;
+
+    my %tstr = (
+        '=s' => ' <STRING>',
+        ''   => undef,
+    );
+
+    say "Synopsis: $0";
+
+    for ( sort keys %$opts ) {
+        my $tstr = $tstr{ $opts->{$_}{ty} };
+        $tstr //= '';
+
+        say "    [--$_$tstr]";
+    }
+
+    say "";
+    say "Examples:";
+    say "  $0 --config pingdomfetch.conf --checkid=710776";
+    say "  $0 --service http://paul.buetow.org --from=02:12:12 --to=14:00:00";
+    say "  $0 --config pingdomfetch.conf --all-tls --verbose";
+    say
+      "  $0 --all-services --from='10.12.12 12:13:14' --to='10.12.12 20:00:00'";
+    say "";
+    say "Read the manual page for detailed descriptions";
+
+    return undef;
+}
+
+my %opts = (
+    'all-services'  => { ty => '',   val => 0 },
+    'all-tls'       => { ty => '',   val => 0 },
+    'checkid'       => { ty => '=s', val => '' },
+    'config'        => { ty => '=s', val => '' },
+    'flatten'       => { ty => '=s', val => '' },
+    'from'          => { ty => '=s', val => '' },
+    'help'          => { ty => '',   val => 0 },
+    'list-services' => { ty => '',   val => 0 },
+    'list-tls'      => { ty => '',   val => 0 },
+    'notify-dummy'  => { ty => '',   val => 0 },
+    'notify-info'   => { ty => '',   val => 0 },
+    'notify'        => { ty => '',   val => 0 },
+    'service'       => { ty => '=s', val => '' },
+    'sort-reverse'  => { ty => '',   val => 0 },
+    'tls'           => { ty => '=s', val => '' },
+    'to'            => { ty => '=s', val => '' },
+    'verbose'       => { ty => '',   val => 0 },
+    'version'       => { ty => '',   val => 0 },
+);
+
+my $result =
+  GetOptions( map { $_ . $opts{$_}{ty} => \$opts{$_}{val} } keys %opts );
+
+if ( $opts{help}{val} == 1 ) {
+    synopsis \%opts;
+    exit 0;
+}
+
+if ( $opts{version}{val} == 1 ) {
+    print get_version_full();
+    exit 0;
+}
+
+exit PINGDOMFETCH::Pingdomfetch->new( \%opts )->run();

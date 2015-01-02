@@ -1,0 +1,5 @@
+pingdomfetch (1.0.0) wheezy; urgency=low
+
+  * Initial release
+
+ -- Paul Buetow <paul@buetow.org>  Thu, 11 Dec 2014 16:24:50 +0100

@@ -1,0 +1,217 @@
+=head1 NAME
+
+pingdomfetch - A small and humble tool to fetch availability stats from Pingdom and notify via E-Mail
+
+=head1 SYNOPSIS
+
+pingdomfetch
+    [--all-services]
+    [--all-tls]
+    [--checkid <STRING>]
+    [--config <STRING>]
+    [--flatten <STRING>]
+    [--from <STRING>]
+    [--help]
+    [--list-services]
+    [--list-tls]
+    [--notify]
+    [--notify-dummy]
+    [--notify-info]
+    [--service <STRING>]
+    [--sort-reverse]
+    [--tls <STRING>]
+    [--to <STRING>]
+    [--verbose]
+    [--version]
+
+
+=head1 DESCRIPTION
+
+pingdomfetch is a tool to fetch availability stats from www.Pingdom.com and notifies the results via Email. You may use this script to extend it to do other things with the results as well. Pingdom already provides notification emailing.
+
+Pingdomfetch also knows about 'so called' top level services (one top level service consists of several services).
+
+=head1 CONFIG
+
+=head2 Possible locations
+
+Create a config at one of the following (or into several) location:
+
+    /etc/pingdomfetch.conf
+    ./pingdomfetch.conf
+    /etc/pingdomfetch.d/*.conf
+    ~/.pingdomfetch.conf
+    ~/.pingdomfetch.d/*.conf
+
+The last config file always overwrites the values configured in the previous config files. For this use the sample configuration file F</usr/share/pingdomfetch/examples/pingdomfetch.conf.sample>. Please read that sample configuration file carefully since it also describes all available config options.
+
+It makes sense to have one global config F</etc/pingdomfetch.conf> containing all general configurations and for each top level service a separate config in F</etc/pingdomfetch.d/TLSNAME.conf>.
+
+=head2 Top level services and services
+
+=head3 Configure a top level service:
+
+Each top level service consists of many services. Since Pingdom does not know about top level services but just about separate checks (which are separate services) pingdomfetch fetches the availability of all services and calculates an average availability of all services which belong to a top level service.
+
+For each top level service you monitor via Pingdom you must create checks at Pingdom (manually). The check names should be of the form of 
+
+    PROCOCOL://FQDN
+
+For example:
+
+    http://paul.buetow.org
+
+    https://paul.buetow.org
+
+just in order to have it uniform to all the other Pingdom checks (there is no technical reason though).
+
+Afterwards create a new file F</etc/pingdomfetch.d/TLSNAME.conf> (for example F</etc/pingdomfetch.d/buetoworg_tls.conf>) with the following content:
+
+    [tls.TLSNAME]
+    PROCOCOL1://FQDN1
+    PROCOCOL2://FQDN2
+
+to be specific it should be like this:
+
+    [tls.buetoworg_paul]
+    http://paul.buetow.org
+    https://paul.buetow.org
+
+The buetoworg_tls will be used by pingdomfetch to identify the top level service (e.g. using --list-tls) and can be freely chosen. 
+
+=head3 Fetch stats of the top level service:
+
+The command
+
+    pingdomfetch --tls buetoworg_tls
+
+fetches the availability of both services from Pingdom and calculates the average availability which is the tls availability and prints out the results to stdout.
+
+    pingdomfetch --from yesterday --to yesterday --flatten bod:eod --all-tls 
+
+fetches the availability of yesteday of all configured tls. There are many other options available. 
+
+=head3 Service options
+
+It is possible to configure special options for special services:
+
+    [tls.TLSNAME]
+    PROCOCOL1://FQDN1[=option1:value1[,option2:value2]
+    PROCOCOL2://FQDN2[=option1:value1[,option2:value2]
+
+The possible options are:
+
+=over
+
+=item weight
+
+If FQDN1 has twice as much traffic as FQDN2 it makes sense to increase its weight. The standard weight is 1. Its used to calculate the tls availability.
+
+=item warning
+
+This overwrites the global warning threshold. It makes sense to use to avoid staus mails just because one specific service is under the specified global warning threshold.
+
+=back
+
+to be specific it should be like this:
+
+    [tls.buetoworg_tls.4352844]
+    http://paul.buetow.org=weight:2,warning:98
+    https://paul.buetow.org=warning:100
+
+and means that the availability of plain http will count twice as much as much. A warning mail will be sent only if the availability is less than 98% for http or less than 100% for https.
+
+=head1 PINGDOMFETCH OPTIONS
+
+=over
+
+=item --all-services
+
+Fetch availability of all services.
+
+=item --all-tls
+
+Fetch availability of all top level services
+
+=item --checkid <NUMBER>
+
+Fetch availability of a specific check ID. The check ID is the Pingdom check ID.
+
+=item --config <STRING>
+
+Also read a specific config file.
+
+=item --flatten <STRING>
+
+Flatten the time interval to fetch availabilities for. E.g.:
+
+    --from yesterday --to yesterday --flatten bod:eod
+
+fetches the availability from begin of day (yesterday) until the end of the day (yesterday).
+
+=item --from <STRING>
+
+Set time interval start time to fetch availabilities for. All formats supported by Time::ParseDate can be used. See L<http://search.cpan.org/~muir/Time-modules-2003.0211/lib/Time/ParseDate.pm>.
+
+For example:
+    
+    --from today
+
+    --from '03.02.2013 12:34:56'
+
+    --from 'last week'
+
+=item --help
+
+Print out a brief help.
+
+=item --list-services
+
+List all configured services.
+
+=item --list-tls
+
+List all configured top level services.
+
+=item --notify
+
+Write a mail to all addresses specified in notify.email.to if at least one service or top level service is in state warning or critical. The warning threshold in % is warning.if.avail.is.less, the critical threshold in % is critical.if.avail.is.less.
+
+=item --notify-dummy
+
+In conjunction with --notify or --notify-info don't actually send mails but print them to stdout.
+
+=item --notify-info
+
+Write a mail to all addresses specified in notify.info.mail.to regardless of warning and critical services and top level services.
+
+=item --service <STRING>
+
+Fetch availability of a specific service name. The service name can be taken from --list-services.
+
+=item --sort-reverse
+
+Reverse the availability output list. Affects only status mails and stdout.
+
+=item --tls <STRING>
+
+Fetch availability of a specific top level service. The top level service name can be taken from --list-tls.
+
+=item --to <STRING>
+
+Same as --from, but specifies the end time to fetch availabilities for.
+
+=item --verbose
+
+Turns on verbose mode. Enables some extra output to stdout.
+
+=item --version
+
+Prints out the current version of pingdomfetch.
+
+=back
+
+=head1 AUTHOR
+
+Paul Buetow - <paul@buetow.org>
+

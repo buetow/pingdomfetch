@@ -1,0 +1,84 @@
+; Comments start with semicolon
+
+; Misc options
+[misc]
+; If pingdom delivers unknown status interpret that as up
+interpret.unknown.status.as.up = true
+
+; If pingdom delivers zero results interpret that as up
+interpret.zero.results.as.up = true
+
+; and notify with '! ' in the mail and/or stdout.
+warning.if.avail.is.less = 100
+
+; And notify with '!!' in the mail and/or stdout.
+critical.if.avail.is.less = 10
+
+; Options for automatic notifications via email
+[notify]
+; The status mail sender address
+notify.email.sender = Pingdomfetch <pingdomfetch@mx.buetow.org>
+
+; Warnings and criticals are sent to those email addreses (comma separated)
+notify.email.to = pingdomfetch@mx.buetow.org
+
+; Infos (no warnings and no criticals) are sent to those email addreses 
+; (comma separated)
+notify.info.email.to = pingdomfetch@mx.buetow.org
+
+; Pingdom stuff, used to pull results from Pingdom via JSON API
+[pingdom]
+; Pingdom API generic configurations
+pingdom.api.host = api.pingdom.com
+pingdom.api.port = 443
+pingdom.api.protocol = https
+
+; Pingdom API username
+pingdom.auth.username = mypingdomuser@example.com
+
+; Pingdom API SSL auth realm
+pingdom.auth.realm = Pingdom API
+
+; Pingdom API password 
+pingdom.auth.password = secret
+
+; Leave this unless you know what you are doing
+pingdom.api.app.key = 7gh8edm89vtyk8s2nqzfdobrw9n72l3k
+pingdom.api.average.action = api/2.0/summary.average
+pingdom.api.all.checks.action = api/2.0/checks
+pingdom.api.all.report.subscriptions = api/2.0/reports.email
+
+; If the Pingdom API timeouts retry that every 3 seconds...
+pingdom.api.failed.retry.after = 3
+
+; ... and try that 10 times
+pingdom.api.failed.giveup.after = 10
+
+; Set to 1 if you want to use a proxy to reach the Pingdom API
+pingdom.proxy.use = 0
+
+; Proxy server to use to reach the Pingdom API
+pingdom.proxy.address = http://useproxy.buetow.invalid
+
+; TLS configurations. It makes sense to create a separate file inside of
+; /etc/pingdomfetch.d/TLSNAME.conf for reach top level service to configure.
+
+; The format is like this:
+; [tls.PINGDOMFETCHNAME(FreeToChoose)]
+; List
+; Of
+; Pingdom
+; Check-Names[=option1:value1[,option2:value2]]
+
+; A few examples:
+[tls.buetow]
+http://paul.buetow.org = weight:50
+https://dev.buetow.org = weight:50
+http://lists.buetow.org = weight:2,warning:98
+https://info.gmx.net = weight:2,warning:98
+http://info.web.de = weight:2,warning:98
+https://info.web.de = weight:2,warning:98
+
+[tls.ninja]
+http://paul.buetow.ninja
+https://paul.buetow.ninja

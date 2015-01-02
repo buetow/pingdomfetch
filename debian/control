@@ -1,0 +1,15 @@
+Source: pingdomfetch
+Section: utils
+Priority: optional
+Maintainer: Paul Buetow <paul@buetoe.org
+Build-Depends: perl, perltidy
+Standards-Version: 3.9.2
+Homepage: http://pingdomfetch.buetow.org
+Vcs-Git: https://github.com/ratnanplan/pingdomfetch
+Vcs-Browser: https://github.com/rantanplan/pingdomfetch
+
+Package: pingdomfetch
+Architecture: all
+Depends: ${perl:Depends}, libwww-perl, libtime-modules-perl, libconfig-json-perl, libio-socket-ssl-perl, libmime-lite-perl, curl, libio-captureoutput-perl
+Description: Pingdom fetch utility
+ Fetches service availability from Pingdom and notifies via E-Mail
