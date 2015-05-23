@@ -6,7 +6,7 @@ Build-Depends: perl, perltidy
 Standards-Version: 3.9.2
 Homepage: http://pingdomfetch.buetow.org
 Vcs-Git: https://github.com/ratnanplan/pingdomfetch
-Vcs-Browser: https://github.com/rantanplan/pingdomfetch
+Vcs-Browser: https://github.com/buetow/pingdomfetch
 
 Package: pingdomfetch
 Architecture: all
